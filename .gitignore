@@ -1,0 +1,6 @@
+dist/*
+node_modules/*
+src/*.js
+specs/**/*.js
+npm-debug.log
+*.DS_Store
