@@ -1,5 +1,7 @@
 # Alan's View
 
+a.k.a AI's View or Terminator's View.
+
 ![Terminator's view](http://www.perivision.net/wordpress/wp-content/uploads/2011/04/bikescan.jpg)
 
 # Using
@@ -28,3 +30,7 @@ view = new AlanView
 
 view.draw props
 ```
+
+Should give something like:
+
+![Result](http://i.imgur.com/nTBkab2.png)
