@@ -9,7 +9,7 @@ class AlanView
     @props = props
 
   draw: (block) ->
-    {saliency, colors, faces, src, width, height} = block.cover
+    {saliency, colors, faces, src, width, height, scene} = block.cover
     {width, height, scale} = @getSizeAndScale width, height
 
     canvas = @props.canvas
@@ -23,6 +23,19 @@ class AlanView
       @drawFaces context, faces, scale
     if colors?
       @drawColors context, colors
+    if scene?
+      @drawScene context, scene, scale
+
+  drawScene: (context, scene, scale) ->
+    {bbox} = scene
+    x = bbox.x * scale
+    y = bbox.y * scale
+    w = bbox.width
+    h = bbox.height
+    context.beginPath()
+    context.rect x, y, w, h
+    context.strokeStyle = 'rgba(0, 255, 0, 0.5)'
+    context.stroke()
 
   drawSaliency: (context, saliency, width, height, scale) ->
     {center, polygon, bounding_rect, radius} = saliency
