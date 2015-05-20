@@ -11,27 +11,49 @@ class AlanView
   draw: (block) ->
     {saliency, colors, faces, src, width, height, scene} = block.cover
     {width, height, scale} = @getSizeAndScale width, height
+    {lines} = block
 
     canvas = @props.canvas
     context = canvas.getContext('2d')
 
     context.clearRect 0, 0, width, height
-
+    console.log 'lines', lines
     if saliency?
       @drawSaliency context, saliency, width, height, scale
     if faces?
       @drawFaces context, faces, scale
-    if colors?
-      @drawColors context, colors
     if scene?
       @drawScene context, scene, scale
+    if lines?
+      @drawLines context, lines, scale
+    if colors?
+      @drawColors context, colors
+
+  drawLines: (context, lines, scale) ->
+    if lines.direction is 'vertical'
+      pieces = lines.columns
+    else
+      pieces = lines.rows
+    for piece in pieces
+      if piece[0] is 'space'
+        bbox = piece[1]
+        x = bbox.x * scale
+        y = bbox.y * scale
+        w = bbox.width * scale
+        h = bbox.height * scale
+        context.beginPath()
+        context.rect x, y, w, h
+        context.strokeStyle = 'rgba(255, 0, 0, 0.5)'
+        context.stroke()
+        context.fillStyle = 'rgba(255, 0, 0, 0.2)'
+        context.fill()
 
   drawScene: (context, scene, scale) ->
     {bbox} = scene
     x = bbox.x * scale
     y = bbox.y * scale
-    w = bbox.width
-    h = bbox.height
+    w = bbox.width * scale
+    h = bbox.height * scale
     context.beginPath()
     context.rect x, y, w, h
     context.strokeStyle = 'rgba(0, 255, 0, 0.5)'
