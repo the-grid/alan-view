@@ -2,9 +2,9 @@
   "name": "alan-view",
   "version": "0.1.0",
   "description": "Alan's view for a given image",
+  "license": "proprietary",
+  "private": true,
   "main": "./src/main",
-  "dependencies": {
-  },
   "devDependencies": {
     "grunt": "~0.4.5",
     "grunt-contrib-coffee": "~0.13.0",
@@ -35,7 +35,9 @@
   },
   "browserify": {
     "name": "alan-view",
-    "transform": ["coffeeify"]
+    "transform": [
+      "coffeeify"
+    ]
   },
   "keywords": [
     "thegrid",

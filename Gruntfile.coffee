@@ -47,8 +47,6 @@ module.exports = ->
 
   @loadNpmTasks 'grunt-contrib-coffee'
   @loadNpmTasks 'grunt-contrib-watch'
-  #@loadNpmTasks 'grunt-cafe-mocha'
-  #@loadNpmTasks 'grunt-mocha-phantomjs'
   @loadNpmTasks 'grunt-coffeelint'
   @loadNpmTasks 'grunt-browserify'
 
