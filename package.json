@@ -2,8 +2,12 @@
   "name": "alan-view",
   "version": "0.1.0",
   "description": "Alan's view for a given image",
-  "license": "proprietary",
-  "private": true,
+    "licenses": [
+    {
+      "type": "MIT",
+      "url": "undefined/blob/master/LICENSE-MIT"
+    }
+  ],
   "main": "./src/main",
   "devDependencies": {
     "grunt": "~0.4.5",
@@ -27,7 +31,7 @@
   },
   "author": {
     "name": "Vilson Vieira",
-    "email": "vilson@void.cc",
+    "email": "vilson@thegrid.io",
     "url": "http://automata.cc"
   },
   "bugs": {
