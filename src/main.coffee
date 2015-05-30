@@ -9,9 +9,8 @@ class AlanView
     @props = props
 
   draw: (block) ->
-    {saliency, colors, faces, src, width, height, scene} = block.cover
+    {saliency, colors, faces, src, width, height, scene, lines} = block.cover
     {width, height, scale} = @getSizeAndScale width, height
-    {lines} = block
 
     canvas = @props.canvas
     context = canvas.getContext('2d')
@@ -42,9 +41,9 @@ class AlanView
         h = bbox.height * scale
         context.beginPath()
         context.rect x, y, w, h
-        context.strokeStyle = 'rgba(0, 0, 0, 0.5)'
+        context.strokeStyle = 'rgba(255, 0, 0, 0.5)'
         context.stroke()
-        context.fillStyle = 'rgba(0, 0, 0, 0.2)'
+        context.fillStyle = 'rgba(255, 0, 0, 0.3)'
         context.fill()
 
   drawScene: (context, scene, width, height, scale) ->

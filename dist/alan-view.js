@@ -13,9 +13,8 @@ AlanView = (function() {
 
   AlanView.prototype.draw = function(block) {
     var canvas, colors, context, faces, height, lines, ref, ref1, saliency, scale, scene, src, width;
-    ref = block.cover, saliency = ref.saliency, colors = ref.colors, faces = ref.faces, src = ref.src, width = ref.width, height = ref.height, scene = ref.scene;
+    ref = block.cover, saliency = ref.saliency, colors = ref.colors, faces = ref.faces, src = ref.src, width = ref.width, height = ref.height, scene = ref.scene, lines = ref.lines;
     ref1 = this.getSizeAndScale(width, height), width = ref1.width, height = ref1.height, scale = ref1.scale;
-    lines = block.lines;
     canvas = this.props.canvas;
     context = canvas.getContext('2d');
     context.clearRect(0, 0, width, height);
@@ -31,7 +30,9 @@ AlanView = (function() {
       this.drawScene(context, scene, width, height, scale);
     }
     if (lines != null) {
-      this.drawLines(context, lines, scale);
+      if (this.props.noLines == null) {
+        this.drawLines(context, lines, scale);
+      }
     }
     if (colors != null) {
       return this.drawColors(context, colors);
@@ -39,17 +40,13 @@ AlanView = (function() {
   };
 
   AlanView.prototype.drawLines = function(context, lines, scale) {
-    var bbox, h, j, len, piece, pieces, results, w, x, y;
-    if (lines.direction === 'vertical') {
-      pieces = lines.columns;
-    } else {
-      pieces = lines.rows;
-    }
+    var bbox, h, j, len, results, stripe, stripes, type, w, x, y;
+    stripes = lines.stripes;
     results = [];
-    for (j = 0, len = pieces.length; j < len; j++) {
-      piece = pieces[j];
-      if (piece[0] === 'space') {
-        bbox = piece[1];
+    for (j = 0, len = stripes.length; j < len; j++) {
+      stripe = stripes[j];
+      type = stripe.type, bbox = stripe.bbox;
+      if (type === 'space') {
         x = bbox.x * scale;
         y = bbox.y * scale;
         w = bbox.width * scale;
@@ -58,7 +55,7 @@ AlanView = (function() {
         context.rect(x, y, w, h);
         context.strokeStyle = 'rgba(255, 0, 0, 0.5)';
         context.stroke();
-        context.fillStyle = 'rgba(255, 0, 0, 0.2)';
+        context.fillStyle = 'rgba(255, 0, 0, 0.3)';
         results.push(context.fill());
       } else {
         results.push(void 0);
