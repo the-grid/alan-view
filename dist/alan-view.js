@@ -24,10 +24,14 @@ AlanView = (function() {
       }
     }
     if (faces != null) {
-      this.drawFaces(context, faces, scale);
+      if (this.props.noFaces == null) {
+        this.drawFaces(context, faces, scale);
+      }
     }
     if (scene != null) {
-      this.drawScene(context, scene, width, height, scale);
+      if (this.props.noScene == null) {
+        this.drawScene(context, scene, width, height, scale);
+      }
     }
     if (lines != null) {
       if (this.props.noLines == null) {
@@ -35,7 +39,9 @@ AlanView = (function() {
       }
     }
     if (colors != null) {
-      return this.drawColors(context, colors);
+      if (this.props.noColors == null) {
+        return this.drawColors(context, colors);
+      }
     }
   };
 
@@ -66,16 +72,16 @@ AlanView = (function() {
 
   AlanView.prototype.drawScene = function(context, scene, width, height, scale) {
     var bbox, h, w, x, y;
-    if (this.props.noScene == null) {
-      bbox = scene.bbox;
-      x = bbox.x * scale;
-      y = bbox.y * scale;
-      w = bbox.width * scale;
-      h = bbox.height * scale;
-      context.beginPath();
-      context.rect(x, y, w, h);
-      context.strokeStyle = 'rgba(0, 255, 0, 0.5)';
-      context.stroke();
+    bbox = scene.bbox;
+    x = bbox.x * scale;
+    y = bbox.y * scale;
+    w = bbox.width * scale;
+    h = bbox.height * scale;
+    context.beginPath();
+    context.rect(x, y, w, h);
+    context.strokeStyle = 'rgba(0, 255, 0, 0.5)';
+    context.stroke();
+    if (this.props.noSceneFading == null) {
       context.beginPath();
       context.rect(0, 0, width, height);
       context.rect(x - 50, y - 50, w + 100, h + 100);

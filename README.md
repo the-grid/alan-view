@@ -23,25 +23,48 @@ We can setup `AlanView` to draw those features into a given canvas:
 ```coffeescript
 view = new AlanView
   canvas: document.getElementById 'some-canvas'
-  maxWidth: 700
-  maxHeight: 700
+  maxWidth: 500
+  maxHeight: 300
 
 view.draw props
 ```
 
 Should give something like:
 
-![Result](http://i.imgur.com/nTBkab2.png)
+![Result](http://i.imgur.com/dEGIYr4.png)
 
 It is also possible to hide layers:
 
 ```coffeescript
 view = new AlanView
   canvas: document.getElementById 'some-canvas'
-  maxWidth: 700
-  maxHeight: 700
-  noSaliency: true
+  maxWidth: 500
+  maxHeight: 300
   noCircle: true
+  noSceneFading: true
+  noColors: true
 
 view.draw props
 ```
+
+Those are the options available:
+
+- `noSaliency`: hides the salient region bounding box
+  - `noPolygon`: hides the polygon around the salient region
+  - `noCircle`: hides the circle around the salient region
+- `noFaces`: hides faces bounding boxes
+- `noScene`: hides scene bounding box
+  - `noSceneFading`: hides the fading bounding box around scene
+- `noLines`: hides rows/columns bounding boxes
+- `noColors`: hides the color palette
+
+# Information displayed
+
+![Carl](http://i.imgur.com/CLk0nia.png)
+
+- Color palettes: 5 circles at top-left
+- Salient region: white bounding box
+- Salient polygon: white shape with no opacity
+- Salient circle: white circle
+- Scene region: green bounding box
+- Lines (columns/rows): red bounding boxes around scene region

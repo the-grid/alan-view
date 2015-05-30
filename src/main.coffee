@@ -21,14 +21,17 @@ class AlanView
       unless @props.noSaliency?
         @drawSaliency context, saliency, width, height, scale
     if faces?
-      @drawFaces context, faces, scale
+      unless @props.noFaces?
+        @drawFaces context, faces, scale
     if scene?
-      @drawScene context, scene, width, height, scale
+      unless @props.noScene?
+        @drawScene context, scene, width, height, scale
     if lines?
       unless @props.noLines?
         @drawLines context, lines, scale
     if colors?
-      @drawColors context, colors
+      unless @props.noColors?
+        @drawColors context, colors
 
   drawLines: (context, lines, scale) ->
     {stripes} = lines
@@ -47,17 +50,17 @@ class AlanView
         context.fill()
 
   drawScene: (context, scene, width, height, scale) ->
-    unless @props.noScene?
-      {bbox} = scene
-      x = bbox.x * scale
-      y = bbox.y * scale
-      w = bbox.width * scale
-      h = bbox.height * scale
-      context.beginPath()
-      context.rect x, y, w, h
-      context.strokeStyle = 'rgba(0, 255, 0, 0.5)'
-      context.stroke()
+    {bbox} = scene
+    x = bbox.x * scale
+    y = bbox.y * scale
+    w = bbox.width * scale
+    h = bbox.height * scale
+    context.beginPath()
+    context.rect x, y, w, h
+    context.strokeStyle = 'rgba(0, 255, 0, 0.5)'
+    context.stroke()
 
+    unless @props.noSceneFading?
       # Fade outside salient bounding box
       context.beginPath()
       context.rect 0, 0, width, height
