@@ -26,27 +26,25 @@ class AlanView
     if scene?
       @drawScene context, scene, width, height, scale
     if lines?
-      @drawLines context, lines, scale
+      unless @props.noLines?
+        @drawLines context, lines, scale
     if colors?
       @drawColors context, colors
 
   drawLines: (context, lines, scale) ->
-    if lines.direction is 'vertical'
-      pieces = lines.columns
-    else
-      pieces = lines.rows
-    for piece in pieces
-      if piece[0] is 'space'
-        bbox = piece[1]
+    {stripes} = lines
+    for stripe in stripes
+      {type, bbox} = stripe
+      if type is 'space'
         x = bbox.x * scale
         y = bbox.y * scale
         w = bbox.width * scale
         h = bbox.height * scale
         context.beginPath()
         context.rect x, y, w, h
-        context.strokeStyle = 'rgba(255, 0, 0, 0.5)'
+        context.strokeStyle = 'rgba(0, 0, 0, 0.5)'
         context.stroke()
-        context.fillStyle = 'rgba(255, 0, 0, 0.2)'
+        context.fillStyle = 'rgba(0, 0, 0, 0.2)'
         context.fill()
 
   drawScene: (context, scene, width, height, scale) ->
