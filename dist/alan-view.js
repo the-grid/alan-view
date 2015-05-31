@@ -143,11 +143,11 @@ AlanView = (function() {
   };
 
   AlanView.prototype.drawFaces = function(context, faces, scale) {
-    var face, height, j, len, results, width, x, y;
+    var confidence, face, height, j, len, results, width, x, y;
     results = [];
     for (j = 0, len = faces.length; j < len; j++) {
       face = faces[j];
-      x = face.x, y = face.y, width = face.width, height = face.height;
+      x = face.x, y = face.y, width = face.width, height = face.height, confidence = face.confidence;
       x *= scale;
       y *= scale;
       width *= scale;
@@ -155,7 +155,13 @@ AlanView = (function() {
       context.fillStyle = 'rgba(0, 0, 155, 0.5)';
       context.fillRect(x, y, width, height);
       context.strokeStyle = 'rgba(0, 0, 155, 0.9)';
-      results.push(context.strokeRect(x, y, width, height));
+      context.strokeRect(x, y, width, height);
+      if (this.props.noFaceConfidence == null) {
+        context.fillStyle = 'rgba(255, 255, 255, 1.0)';
+        results.push(context.fillText(confidence.toFixed(2), x, y + height + 10));
+      } else {
+        results.push(void 0);
+      }
     }
     return results;
   };

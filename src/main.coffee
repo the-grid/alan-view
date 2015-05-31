@@ -122,7 +122,7 @@ class AlanView
 
   drawFaces: (context, faces, scale) ->
     for face in faces
-      {x, y, width, height} = face
+      {x, y, width, height, confidence} = face
       x *= scale
       y *= scale
       width *= scale
@@ -131,6 +131,9 @@ class AlanView
       context.fillRect(x, y, width, height)
       context.strokeStyle = 'rgba(0, 0, 155, 0.9)'
       context.strokeRect(x, y, width, height)
+      unless @props.noFaceConfidence?
+        context.fillStyle = 'rgba(255, 255, 255, 1.0)'
+        context.fillText confidence.toFixed(2), x, y + height + 10
 
   drawColors: (context, colors) ->
     for c, i in colors

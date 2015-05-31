@@ -53,6 +53,7 @@ Those are the options available:
   - `noPolygon`: hides the polygon around the salient region
   - `noCircle`: hides the circle around the salient region
 - `noFaces`: hides faces bounding boxes
+  - `noFaceConfidence`: hide confidence levels for faces
 - `noScene`: hides scene bounding box
   - `noSceneFading`: hides the fading bounding box around scene
 - `noLines`: hides rows/columns bounding boxes
@@ -68,3 +69,4 @@ Those are the options available:
 - Salient circle: white circle
 - Scene region: green bounding box
 - Lines (columns/rows): red bounding boxes around scene region
+- Faces: blue bounding boxes around each face
