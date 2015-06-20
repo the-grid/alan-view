@@ -9,7 +9,7 @@ class AlanView
     @props = props
 
   draw: (block) ->
-    {saliency, colors, faces, src, width, height, scene, lines} = block.cover
+    {saliency, colors, faces, padded_faces, src, width, height, scene, lines} = block.cover
     {width, height, scale} = @getSizeAndScale width, height
 
     canvas = @props.canvas
@@ -20,6 +20,9 @@ class AlanView
     if saliency?
       unless @props.noSaliency?
         @drawSaliency context, saliency, width, height, scale
+    if padded_faces?
+      unless @props.noPaddedFaces?
+        @drawPaddedFaces context, padded_faces, scale
     if faces?
       unless @props.noFaces?
         @drawFaces context, faces, scale
@@ -69,7 +72,38 @@ class AlanView
       context.fill('evenodd')
 
   drawSaliency: (context, saliency, width, height, scale) ->
-    {center, polygon, bounding_rect, radius} = saliency
+    {center, polygon, bounding_rect, radius, regions, bbox} = saliency
+
+    if bbox?
+      context.beginPath()
+      context.rect bbox.x*scale, bbox.y*scale, bbox.width*scale, bbox.height*scale
+      context.strokeStyle = 'rgba(0, 0, 255, 0.5)'
+      context.stroke()
+
+    if regions?
+      for region in regions
+        {polygon} = region
+        for point in polygon
+          {x, y} = point
+          context.beginPath()
+          context.arc x*scale, y*scale, 1, 0, TAU, false
+          context.fillStyle = 'rgba(255, 255, 255, 0.75)'
+          context.fill()
+        context.beginPath()
+        # # Outline border (CW)
+        # context.moveTo 0, 0
+        # context.lineTo width, 0
+        # context.lineTo width, height
+        # context.lineTo 0, height
+        firstPoint = polygon[0]
+        context.moveTo firstPoint.x*scale, firstPoint.y*scale
+        for point in polygon
+          {x, y} = point
+          context.lineTo x*scale, y*scale
+        context.lineTo firstPoint.x*scale, firstPoint.y*scale
+        context.closePath()
+        context.fillStyle = 'rgba(255, 255, 255, 0.25)'
+        context.fill()
 
     if polygon?
       unless @props.noPolygon?
@@ -119,6 +153,18 @@ class AlanView
         context.arc(center[0]*scale, center[1]*scale, radius*scale, 0, TAU, false)
         context.strokeStyle = 'rgba(255, 255, 255, 0.7)'
         context.stroke()
+
+  drawPaddedFaces: (context, faces, scale) ->
+    for face in faces
+      {x, y, width, height} = face
+      x *= scale
+      y *= scale
+      width *= scale
+      height *= scale
+      context.fillStyle = 'rgba(0, 0, 150, 0.3)'
+      context.fillRect(x, y, width, height)
+      context.strokeStyle = 'rgba(0, 0, 150, 0.9)'
+      context.strokeRect(x, y, width, height)
 
   drawFaces: (context, faces, scale) ->
     for face in faces

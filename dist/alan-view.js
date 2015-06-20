@@ -12,8 +12,8 @@ AlanView = (function() {
   }
 
   AlanView.prototype.draw = function(block) {
-    var canvas, colors, context, faces, height, lines, ref, ref1, saliency, scale, scene, src, width;
-    ref = block.cover, saliency = ref.saliency, colors = ref.colors, faces = ref.faces, src = ref.src, width = ref.width, height = ref.height, scene = ref.scene, lines = ref.lines;
+    var canvas, colors, context, faces, height, lines, padded_faces, ref, ref1, saliency, scale, scene, src, width;
+    ref = block.cover, saliency = ref.saliency, colors = ref.colors, faces = ref.faces, padded_faces = ref.padded_faces, src = ref.src, width = ref.width, height = ref.height, scene = ref.scene, lines = ref.lines;
     ref1 = this.getSizeAndScale(width, height), width = ref1.width, height = ref1.height, scale = ref1.scale;
     canvas = this.props.canvas;
     context = canvas.getContext('2d');
@@ -21,6 +21,11 @@ AlanView = (function() {
     if (saliency != null) {
       if (this.props.noSaliency == null) {
         this.drawSaliency(context, saliency, width, height, scale);
+      }
+    }
+    if (padded_faces != null) {
+      if (this.props.noPaddedFaces == null) {
+        this.drawPaddedFaces(context, padded_faces, scale);
       }
     }
     if (faces != null) {
@@ -91,12 +96,44 @@ AlanView = (function() {
   };
 
   AlanView.prototype.drawSaliency = function(context, saliency, width, height, scale) {
-    var b, bounding_rect, center, firstPoint, h, j, k, l, len, len1, point, polygon, r, radius, t, w;
-    center = saliency.center, polygon = saliency.polygon, bounding_rect = saliency.bounding_rect, radius = saliency.radius;
+    var b, bbox, bounding_rect, center, firstPoint, h, j, k, l, len, len1, len2, len3, len4, m, n, o, point, polygon, r, radius, region, regions, t, w, x, y;
+    center = saliency.center, polygon = saliency.polygon, bounding_rect = saliency.bounding_rect, radius = saliency.radius, regions = saliency.regions, bbox = saliency.bbox;
+    if (bbox != null) {
+      context.beginPath();
+      context.rect(bbox.x * scale, bbox.y * scale, bbox.width * scale, bbox.height * scale);
+      context.strokeStyle = 'rgba(0, 0, 255, 0.5)';
+      context.stroke();
+    }
+    if (regions != null) {
+      for (j = 0, len = regions.length; j < len; j++) {
+        region = regions[j];
+        polygon = region.polygon;
+        for (k = 0, len1 = polygon.length; k < len1; k++) {
+          point = polygon[k];
+          x = point.x, y = point.y;
+          context.beginPath();
+          context.arc(x * scale, y * scale, 1, 0, TAU, false);
+          context.fillStyle = 'rgba(255, 255, 255, 0.75)';
+          context.fill();
+        }
+        context.beginPath();
+        firstPoint = polygon[0];
+        context.moveTo(firstPoint.x * scale, firstPoint.y * scale);
+        for (m = 0, len2 = polygon.length; m < len2; m++) {
+          point = polygon[m];
+          x = point.x, y = point.y;
+          context.lineTo(x * scale, y * scale);
+        }
+        context.lineTo(firstPoint.x * scale, firstPoint.y * scale);
+        context.closePath();
+        context.fillStyle = 'rgba(255, 255, 255, 0.25)';
+        context.fill();
+      }
+    }
     if (polygon != null) {
       if (this.props.noPolygon == null) {
-        for (j = 0, len = polygon.length; j < len; j++) {
-          point = polygon[j];
+        for (n = 0, len3 = polygon.length; n < len3; n++) {
+          point = polygon[n];
           context.beginPath();
           context.arc(point[0] * scale, point[1] * scale, 1, 0, TAU, false);
           context.fillStyle = 'rgba(255, 255, 255, 0.75)';
@@ -109,8 +146,8 @@ AlanView = (function() {
         context.lineTo(0, height);
         firstPoint = polygon[0];
         context.moveTo(firstPoint[0] * scale, firstPoint[1] * scale);
-        for (k = 0, len1 = polygon.length; k < len1; k++) {
-          point = polygon[k];
+        for (o = 0, len4 = polygon.length; o < len4; o++) {
+          point = polygon[o];
           context.lineTo(point[0] * scale, point[1] * scale);
         }
         context.closePath();
@@ -140,6 +177,24 @@ AlanView = (function() {
         return context.stroke();
       }
     }
+  };
+
+  AlanView.prototype.drawPaddedFaces = function(context, faces, scale) {
+    var face, height, j, len, results, width, x, y;
+    results = [];
+    for (j = 0, len = faces.length; j < len; j++) {
+      face = faces[j];
+      x = face.x, y = face.y, width = face.width, height = face.height;
+      x *= scale;
+      y *= scale;
+      width *= scale;
+      height *= scale;
+      context.fillStyle = 'rgba(0, 0, 150, 0.3)';
+      context.fillRect(x, y, width, height);
+      context.strokeStyle = 'rgba(0, 0, 150, 0.9)';
+      results.push(context.strokeRect(x, y, width, height));
+    }
+    return results;
   };
 
   AlanView.prototype.drawFaces = function(context, faces, scale) {
