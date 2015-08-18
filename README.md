@@ -3,6 +3,9 @@
 a.k.a AI's View or Terminator's View, is pure canvas library to
 overlay measurement data on top of analysed images.
 
+An [online demo is available](http://the-grid.github.io/alan-view/examples/). Also check `examples/` and `examples/fixtures.json` for an
+example of input data.
+
 ![Terminator's view](http://www.perivision.net/wordpress/wp-content/uploads/2011/04/bikescan.jpg)
 
 # Using
