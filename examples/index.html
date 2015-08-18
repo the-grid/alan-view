@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Alan View</title>
+
+  <style>
+  body {
+    margin: 0;
+    background-color: #f6f6f6;
+  }
+  .image {
+    position: relative;
+    float: left;
+    margin: 5%;
+    height: 33%;
+  }
+  .image canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+  </style>
+
+  <script type="text/javascript" src="../dist/alan-view.js"></script>
+</head>
+<body>
+  <div id="container"></div>
+  <script>
+    function loadJSON(file, callback) {
+      var xobj = new XMLHttpRequest();
+      xobj.overrideMimeType("application/json");
+      xobj.open('GET', file, true);
+      xobj.onreadystatechange = function () {
+        if (xobj.readyState == 4 && xobj.status == "200") {
+          callback(xobj.responseText);
+        }
+      };
+      xobj.send(null);
+    }
+    window.addEventListener('DOMContentLoaded', function() {
+      var AlanView = window.alanView;
+
+      loadJSON('fixtures.json', function (response) {
+        var fixtures = JSON.parse(response);
+        var images = [fixtures];
+
+        var container = document.getElementById('container');
+        images.forEach(function (img, i) {
+          var aux = new AlanView({
+            maxWidth: 500,
+            maxHeight: 300
+          });
+          var dim = aux.getSizeAndScale(img.cover.width, img.cover.height);
+          var w = dim.width;
+              h = dim.height;
+          container.innerHTML += '<div class="image"><img src="'+img.cover.src+'" width="'+w+'" height="'+h+'" /><canvas id="'+i+'" width="'+w+'" height="'+h+'"></div>'
+        });
+        var alans = [];
+        images.forEach(function (img, i) {
+          alans[i] = new AlanView({
+            canvas: document.getElementById(i),
+            noCircle: true,
+            noSceneFading: true,
+            maxWidth: 500,
+            maxHeight: 300
+          });
+          alans[i].draw(img);
+        });
+      });
+    });
+  </script>
+</body>
+</html>
