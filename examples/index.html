@@ -6,7 +6,13 @@
   <style>
   body {
     margin: 0;
+    color: #222222;
     background-color: #f6f6f6;
+    font-face: monospace;
+    font-size: 12pt;
+  }
+  h1 {
+    font-size: 16pt;
   }
   .image {
     position: relative;
@@ -24,7 +30,17 @@
   <script type="text/javascript" src="../dist/alan-view.js"></script>
 </head>
 <body>
+  <h1>Alan View</h1>
   <div id="container"></div>
+  <ul>
+    <li>Color palettes:</li> 5 circles at top-left
+    <li>Salient region: white bounding box</li>
+    <li>Salient polygon: white shape with no opacity</li>
+    <li>Salient circle: white circle</li>
+    <li>Scene region: green bounding box</li>
+    <li>Lines (columns/rows): red bounding boxes around scene region</li>
+    <li>Faces: blue bounding boxes around each face</li>
+  </ul>
   <script>
     function loadJSON(file, callback) {
       var xobj = new XMLHttpRequest();
