@@ -1,0 +1,13 @@
+language: node_js
+node_js:
+- 0.12
+before_script:
+- npm install -g grunt-cli
+deploy:
+  provider: npm
+  email: vilson@void.cc
+  api_key:
+    secure: H/JWiZ8LAfPopi3sagMvdQgDtEog46GXlEYIdst65ji0botF5vZczZzk7JAUD00JD1GePUJOeKOHN0GBBcBQQEwSHoU7ZUJg748SN5bOwL2CBJzhN/vxPHbGCB7fTDrJiCC0vNEeHX9SY0vGQlF5PePF6HGdxxl7vdp92etoSc1vLsoZPWVyhgsb4+CuEGAdApv6bP18px3Q/bzI2e1PQPZeEMsVX21EH7ZWbeIughs5705LWrks7iLhKWEqbeTJMicWSjfSx1kJke688SFojcVW8PCS+M3Pb9pzu3HVFlGDRPSDKDcSsjMOfuAogjSp7HsjzlmtYEuISagUXT+FqMtndYWz0OK9Y4nS5TYx80+fCziNsyHHux7ZL+idMEOtj6Yn3gGXOLevaTgTCibwbjBRPzPuHhW2WlrprUhO5V/09uFUqYWgpIknWVVLmbZqWaH1838IMkC90YZkg/GdnGf5jYdgdXpg87r38i+ZGI9YZA3Zhu4FId25bqTWFQwgXDIk6vXo5EiKXYzsJsFnwcx3I2dXcCvPtjmPdpiAi1aWVZPTq9WfYeM2sodeUpk3mR2MKLYBKMDNLSkXD2WyuEVsXf6xuUYo0pTF65cjEEwHZtNchbJotNZi83nH72evFY11xcDSph2dagKTEkkXd8GhgFqylYQmvXY3Q885j1U=
+  on:
+    tags: true
+    repo: the-grid/alan-view
