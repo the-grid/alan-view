@@ -61,10 +61,14 @@ Those are the options available:
   - `noSceneFading`: hides the fading bounding box around scene
 - `noLines`: hides rows/columns bounding boxes
 - `noColors`: hides the color palette
+- `noTextregions`: hides textual regions
+- `noBackground`: do not clean the background (good for overlays)
 
 # Information displayed
 
 ![Carl](http://i.imgur.com/CLk0nia.png)
+
+![Alan](http://i.imgur.com/E7jz9eV.png)
 
 - Color palettes: 5 circles at top-left
 - Salient region: white bounding box
@@ -73,3 +77,4 @@ Those are the options available:
 - Scene region: green bounding box
 - Lines (columns/rows): red bounding boxes around scene region
 - Faces: blue bounding boxes around each face
+- Text regions: blue bounding boxes around textual regions

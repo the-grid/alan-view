@@ -249,7 +249,6 @@ AlanView = (function() {
 module.exports = AlanView;
 
 
-
 },{"./sizeByMax":2}],2:[function(require,module,exports){
 'use strict';
 var sizeByMax;
