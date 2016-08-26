@@ -1,6 +1,6 @@
 {
   "name": "alan-view",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Alan's view for a given image",
   "license": "MIT",
   "main": "./src/main",
