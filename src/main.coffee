@@ -61,7 +61,7 @@ class AlanView
     h = bbox.height * scale
     context.beginPath()
     context.rect x, y, w, h
-    context.strokeStyle = 'rgba(0, 255, 0, 0.5)'
+    context.strokeStyle = 'rgba(0, 255, 0, 1.0)'
     context.stroke()
 
     unless @props.noSceneFading?
@@ -148,6 +148,9 @@ class AlanView
       unless @props.noFaceConfidence?
         context.fillStyle = 'rgba(255, 255, 255, 1.0)'
         context.fillText confidence.toFixed(2), x, y + height + 10
+      area = width * height
+      context.fillText "#{width}x#{height}", x + width / 3, y + height / 2
+      context.fillText area.toFixed(0), x + width / 3, y + height / 2 + 10
 
   drawTextregions: (context, regions, scale) ->
     for region in regions
@@ -156,9 +159,9 @@ class AlanView
       y *= scale
       width *= scale
       height *= scale
-      context.fillStyle = 'rgba(0, 0, 155, 0.5)'
+      context.fillStyle = 'rgba(155, 0, 0, 0.5)'
       context.fillRect(x, y, width, height)
-      context.strokeStyle = 'rgba(0, 0, 155, 0.9)'
+      context.strokeStyle = 'rgba(155, 0, 0, 0.9)'
       context.strokeRect(x, y, width, height)
 
   drawColors: (context, colors) ->
