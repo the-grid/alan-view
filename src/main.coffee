@@ -4,6 +4,59 @@ sizeByMax = require './sizeByMax'
 
 TAU = 2 * Math.PI
 
+drawTarget = (context, x, y, radius, style) ->
+  context.beginPath()
+  context.arc(x, y, radius, 0, TAU, false)
+  context.strokeStyle = style
+  context.stroke()
+  context.beginPath()
+  context.moveTo(x - 15, y)
+  context.lineTo(x + 15, y)
+  context.stroke()
+  context.beginPath()
+  context.moveTo(x, y - 15)
+  context.lineTo(x, y + 15)
+  context.stroke()
+
+drawPolygon = (context, polygon, scale, width, height) ->
+  # Draw points of polygon
+  for point in polygon
+    if point.length?
+      x = point[0]*scale
+      y = point[1]*scale
+    else
+      {x, y} = point
+      x *= scale
+      y *= scale
+    context.beginPath()
+    context.arc(x, y, 1, 0, TAU, false)
+    context.fillStyle = 'rgba(255, 255, 255, 0.75)'
+    context.fill()
+
+  # Fade outside of polygon
+  context.beginPath()
+  # Outline border (CW)
+  context.moveTo 0, 0
+  context.lineTo width, 0
+  context.lineTo width, height
+  context.lineTo 0, height
+  # Polygon hole (CCW (always?))
+  for point,i in polygon
+    if point.length?
+      x = point[0] * scale
+      y = point[1] * scale
+    else
+      {x, y} = point
+      x *= scale
+      y *= scale
+    if i == 0
+      context.moveTo x, y
+    context.lineTo x, y
+  context.closePath()
+
+  context.fillStyle = 'rgba(255, 255, 255, 0.25)'
+  context.fill('evenodd')
+
 class AlanView
   constructor: (props) ->
     @props = props
@@ -54,15 +107,18 @@ class AlanView
         context.fill()
 
   drawScene: (context, scene, width, height, scale) ->
-    {bbox} = scene
+    {bbox, center} = scene
     x = bbox.x * scale
     y = bbox.y * scale
     w = bbox.width * scale
     h = bbox.height * scale
     context.beginPath()
     context.rect x, y, w, h
-    context.strokeStyle = 'rgba(0, 255, 0, 1.0)'
+    context.strokeStyle = 'rgba(0, 255, 0, 0.7)'
     context.stroke()
+
+    if center?
+      drawTarget context, center.x*scale, center.y*scale, 3, 'rgba(0, 255, 0, 0.7)'
 
     unless @props.noSceneFading?
       # Fade outside salient bounding box
@@ -77,29 +133,7 @@ class AlanView
 
     if polygon?
       unless @props.noPolygon?
-        # Draw points of polygon
-        for point in polygon
-          context.beginPath()
-          context.arc(point[0]*scale, point[1]*scale, 1, 0, TAU, false)
-          context.fillStyle = 'rgba(255, 255, 255, 0.75)'
-          context.fill()
-
-        # Fade outside of polygon
-        context.beginPath()
-        # Outline border (CW)
-        context.moveTo 0, 0
-        context.lineTo width, 0
-        context.lineTo width, height
-        context.lineTo 0, height
-        # Polygon hole (CCW (always?))
-        firstPoint = polygon[0]
-        context.moveTo(firstPoint[0]*scale, firstPoint[1]*scale)
-        for point in polygon
-          context.lineTo(point[0]*scale, point[1]*scale)
-        context.closePath()
-
-        context.fillStyle = 'rgba(255, 255, 255, 0.25)'
-        context.fill('evenodd')
+        drawPolygon context, polygon, scale, width, height
 
     if bounding_rect?
       unless @props.noSaliency?
@@ -126,13 +160,19 @@ class AlanView
 
     if regions?
       for region in regions
-        {x, y, width, height} = region.bbox
+        {bbox, polygon} = region
+        {x, y, width, height} = bbox
         x *= scale
         y *= scale
         width *= scale
         height *= scale
         context.strokeStyle = 'rgba(255, 255, 255, 0.5)'
         context.strokeRect(x, y, width, height)
+        if polygon?
+          unless @props.noPolygon?
+            drawPolygon context, polygon, scale, width, height
+
+
 
   drawFaces: (context, faces, scale) ->
     for face in faces
