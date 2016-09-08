@@ -4,6 +4,12 @@ sizeByMax = require './sizeByMax'
 
 TAU = 2 * Math.PI
 
+map = (x, min, max, a, b) ->
+  return ((b - a) * (x - min)) / (max - min) + a
+
+max = (array) ->
+  array.reduce (a, b) -> Math.max a, b
+
 drawTarget = (context, x, y, radius, style) ->
   context.beginPath()
   context.arc(x, y, radius, 0, TAU, false)
@@ -112,7 +118,16 @@ class AlanView
       context.stroke()
       # Draw label
       context.fillStyle = 'rgba(255, 255, 255, 1.0)'
-      context.fillText type.toUpperCase(), histX + 10, histY + 10
+      context.fillText type.toUpperCase(), histX + 10, histY + 20
+      # Draw curves
+      maxX = histogram[type].length
+      maxY = max histogram[type]
+      for point,i in histogram[type]
+        x = map i, 0, maxX, 0, histWidth - 20
+        y = map point, 0, maxY, 0, histHeight - 40
+        context.beginPath()
+        context.arc histX + 10 + x, histY + histHeight - 10 - y, 1, 0, TAU, false
+        context.fill()
 
       histY -= histHeight + 10
 
