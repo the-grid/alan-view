@@ -89,6 +89,9 @@ class AlanView
     if colors?
       unless @props.noColors?
         @drawColors context, colors
+    if histogram?
+      unless @props.noHistogram?
+        @drawHistogram context, histogram
 
   drawLines: (context, lines, scale) ->
     {stripes} = lines
