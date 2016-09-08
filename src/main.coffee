@@ -62,7 +62,13 @@ class AlanView
     @props = props
 
   draw: (block) ->
-    {saliency, colors, faces, textregions, src, width, height, scene, lines} = block.cover
+    return unless block.cover?
+    # Get mandatory measurements
+    {src, width, height, colors} = block.cover
+    # Get extra measurements
+    {saliency, faces, textregions, histogram} = block.cover
+    # Get helper measurements
+    {scene, lines} = block.cover
     {width, height, scale} = @getSizeAndScale width, height
 
     canvas = @props.canvas
