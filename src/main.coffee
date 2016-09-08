@@ -97,7 +97,19 @@ class AlanView
         @drawColors context, colors
     if histogram?
       unless @props.noHistogram?
-        @drawHistogram context, histogram
+        @drawHistogram context, histogram, width, height
+
+  drawHistogram: (context, histogram, width, height) ->
+    histWidth = 200
+    histHeight = 100
+    histX = 10
+    histY = height - 10
+    for type of histogram
+      context.beginPath()
+      context.rect histX, histY, histWidth, histHeight
+      context.strokeStyle = 'rgba(255, 255, 255, 0.9)'
+      context.stroke()
+      histY -= histHeight + 10
 
   drawLines: (context, lines, scale) ->
     {stripes} = lines
