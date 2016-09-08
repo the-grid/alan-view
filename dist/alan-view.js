@@ -1,10 +1,67 @@
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.alanView = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 'use strict';
-var AlanView, TAU, sizeByMax;
+var AlanView, TAU, drawPolygon, drawTarget, sizeByMax;
 
 sizeByMax = require('./sizeByMax');
 
 TAU = 2 * Math.PI;
+
+drawTarget = function(context, x, y, radius, style) {
+  context.beginPath();
+  context.arc(x, y, radius, 0, TAU, false);
+  context.strokeStyle = style;
+  context.stroke();
+  context.beginPath();
+  context.moveTo(x - 15, y);
+  context.lineTo(x + 15, y);
+  context.stroke();
+  context.beginPath();
+  context.moveTo(x, y - 15);
+  context.lineTo(x, y + 15);
+  return context.stroke();
+};
+
+drawPolygon = function(context, polygon, scale, width, height) {
+  var i, j, k, len, len1, point, x, y;
+  for (j = 0, len = polygon.length; j < len; j++) {
+    point = polygon[j];
+    if (point.length != null) {
+      x = point[0] * scale;
+      y = point[1] * scale;
+    } else {
+      x = point.x, y = point.y;
+      x *= scale;
+      y *= scale;
+    }
+    context.beginPath();
+    context.arc(x, y, 1, 0, TAU, false);
+    context.fillStyle = 'rgba(255, 255, 255, 0.75)';
+    context.fill();
+  }
+  context.beginPath();
+  context.moveTo(0, 0);
+  context.lineTo(width, 0);
+  context.lineTo(width, height);
+  context.lineTo(0, height);
+  for (i = k = 0, len1 = polygon.length; k < len1; i = ++k) {
+    point = polygon[i];
+    if (point.length != null) {
+      x = point[0] * scale;
+      y = point[1] * scale;
+    } else {
+      x = point.x, y = point.y;
+      x *= scale;
+      y *= scale;
+    }
+    if (i === 0) {
+      context.moveTo(x, y);
+    }
+    context.lineTo(x, y);
+  }
+  context.closePath();
+  context.fillStyle = 'rgba(255, 255, 255, 0.25)';
+  return context.fill('evenodd');
+};
 
 AlanView = (function() {
   function AlanView(props) {
@@ -78,16 +135,19 @@ AlanView = (function() {
   };
 
   AlanView.prototype.drawScene = function(context, scene, width, height, scale) {
-    var bbox, h, w, x, y;
-    bbox = scene.bbox;
+    var bbox, center, h, w, x, y;
+    bbox = scene.bbox, center = scene.center;
     x = bbox.x * scale;
     y = bbox.y * scale;
     w = bbox.width * scale;
     h = bbox.height * scale;
     context.beginPath();
     context.rect(x, y, w, h);
-    context.strokeStyle = 'rgba(0, 255, 0, 1.0)';
+    context.strokeStyle = 'rgba(0, 255, 0, 0.7)';
     context.stroke();
+    if (center != null) {
+      drawTarget(context, center.x * scale, center.y * scale, 3, 'rgba(0, 255, 0, 0.7)');
+    }
     if (this.props.noSceneFading == null) {
       context.beginPath();
       context.rect(0, 0, width, height);
@@ -98,31 +158,11 @@ AlanView = (function() {
   };
 
   AlanView.prototype.drawSaliency = function(context, saliency, width, height, scale) {
-    var b, bounding_rect, center, firstPoint, h, j, k, l, len, len1, len2, m, point, polygon, r, radius, ref, region, regions, results, t, w, x, y;
+    var b, bbox, bounding_rect, center, h, j, l, len, polygon, r, radius, region, regions, results, t, w, x, y;
     regions = saliency.regions, center = saliency.center, polygon = saliency.polygon, bounding_rect = saliency.bounding_rect, radius = saliency.radius;
     if (polygon != null) {
       if (this.props.noPolygon == null) {
-        for (j = 0, len = polygon.length; j < len; j++) {
-          point = polygon[j];
-          context.beginPath();
-          context.arc(point[0] * scale, point[1] * scale, 1, 0, TAU, false);
-          context.fillStyle = 'rgba(255, 255, 255, 0.75)';
-          context.fill();
-        }
-        context.beginPath();
-        context.moveTo(0, 0);
-        context.lineTo(width, 0);
-        context.lineTo(width, height);
-        context.lineTo(0, height);
-        firstPoint = polygon[0];
-        context.moveTo(firstPoint[0] * scale, firstPoint[1] * scale);
-        for (k = 0, len1 = polygon.length; k < len1; k++) {
-          point = polygon[k];
-          context.lineTo(point[0] * scale, point[1] * scale);
-        }
-        context.closePath();
-        context.fillStyle = 'rgba(255, 255, 255, 0.25)';
-        context.fill('evenodd');
+        drawPolygon(context, polygon, scale, width, height);
       }
     }
     if (bounding_rect != null) {
@@ -149,15 +189,25 @@ AlanView = (function() {
     }
     if (regions != null) {
       results = [];
-      for (m = 0, len2 = regions.length; m < len2; m++) {
-        region = regions[m];
-        ref = region.bbox, x = ref.x, y = ref.y, width = ref.width, height = ref.height;
+      for (j = 0, len = regions.length; j < len; j++) {
+        region = regions[j];
+        bbox = region.bbox, polygon = region.polygon;
+        x = bbox.x, y = bbox.y, width = bbox.width, height = bbox.height;
         x *= scale;
         y *= scale;
         width *= scale;
         height *= scale;
         context.strokeStyle = 'rgba(255, 255, 255, 0.5)';
-        results.push(context.strokeRect(x, y, width, height));
+        context.strokeRect(x, y, width, height);
+        if (polygon != null) {
+          if (this.props.noPolygon == null) {
+            results.push(drawPolygon(context, polygon, scale, width, height));
+          } else {
+            results.push(void 0);
+          }
+        } else {
+          results.push(void 0);
+        }
       }
       return results;
     }
