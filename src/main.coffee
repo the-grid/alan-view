@@ -103,12 +103,17 @@ class AlanView
     histWidth = 200
     histHeight = 100
     histX = 10
-    histY = height - 10
+    histY = height - histHeight - 10
     for type of histogram
+      # Draw histogram borders
       context.beginPath()
       context.rect histX, histY, histWidth, histHeight
       context.strokeStyle = 'rgba(255, 255, 255, 0.9)'
       context.stroke()
+      # Draw label
+      context.fillStyle = 'rgba(255, 255, 255, 1.0)'
+      context.fillText type.toUpperCase(), histX + 10, histY + 10
+
       histY -= histHeight + 10
 
   drawLines: (context, lines, scale) ->
@@ -192,8 +197,6 @@ class AlanView
         if polygon?
           unless @props.noPolygon?
             drawPolygon context, polygon, scale, width, height
-
-
 
   drawFaces: (context, faces, scale) ->
     for face in faces
