@@ -103,13 +103,14 @@ class AlanView
         @drawColors context, colors
     if histogram?
       unless @props.noHistogram?
-        @drawHistogram context, histogram, width, height
+        @drawHistogram context, histogram, width, height, scale
 
-  drawHistogram: (context, histogram, width, height) ->
-    histWidth = 200
-    histHeight = 100
-    histX = 10
-    histY = height - histHeight - 10
+  drawHistogram: (context, histogram, width, height, scale) ->
+    pad = 0.005 * width
+    histWidth = 0.10 * width
+    histHeight = 0.075 * height
+    histX = pad
+    histY = height - histHeight - pad
     for type of histogram
       # Draw histogram borders
       context.beginPath()
@@ -118,18 +119,21 @@ class AlanView
       context.stroke()
       # Draw label
       context.fillStyle = 'rgba(255, 255, 255, 1.0)'
-      context.fillText type.toUpperCase(), histX + 10, histY + 20
+      context.fillText type.toUpperCase(), histX + pad, histY + 2*pad
       # Draw curves
       maxX = histogram[type].length
       maxY = max histogram[type]
+      context.beginPath()
       for point,i in histogram[type]
-        x = map i, 0, maxX, 0, histWidth - 20
-        y = map point, 0, maxY, 0, histHeight - 40
-        context.beginPath()
-        context.arc histX + 10 + x, histY + histHeight - 10 - y, 1, 0, TAU, false
-        context.fill()
+        x = map i, 0, maxX, 0, histWidth - 2*pad
+        y = map point, 0, maxY, 0, histHeight - 4*pad
+        if i == 0
+          context.moveTo histX + pad + x, histY + histHeight - pad - y
+        else
+          context.lineTo histX + pad + x, histY + histHeight - pad - y
+      context.stroke()
 
-      histY -= histHeight + 10
+      histY -= histHeight + pad
 
   drawLines: (context, lines, scale) ->
     {stripes} = lines
